@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QPushButton>
 
+const QString CODE_DIRECTORY = "/home/tareque/codeforces";
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

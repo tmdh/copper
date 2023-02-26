@@ -1,9 +1,10 @@
 #include <QDir>
+#include <QFileSystemModel>
 #include <QPushButton>
 #include <QSplitter>
-#include <QStandardItemModel>
 #include <QTextEdit>
 #include <QTreeView>
+
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -12,16 +13,14 @@ MainWindow::MainWindow(QWidget *parent)
     QSplitter *splitter = new QSplitter;
 
     QTreeView *treeview = new QTreeView(splitter);
-    QStandardItemModel *model = new QStandardItemModel;
-    QDir directory("/home/tareque/codeforces");
-    directory.setFilter(QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot);
-    QFileInfoList list = directory.entryInfoList();
-    for (int i = 0; i < list.size(); ++i) {
-        QFileInfo fileInfo = list.at(i);
-        model->appendRow(new QStandardItem(fileInfo.fileName()));
-    }
+    QFileSystemModel *model = new QFileSystemModel();
+    model->setRootPath(CODE_DIRECTORY);
     treeview->setModel(model);
+    treeview->setRootIndex(model->index(CODE_DIRECTORY));
     treeview->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    for (int i = 1; i < 4; i++) {
+        treeview->setColumnHidden(i, true);
+    }
     treeview->setHeaderHidden(true);
 
     QTextEdit *textedit = new QTextEdit(splitter);
