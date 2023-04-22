@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.16.0)
 project(copper VERSION 0.1.0)
 
 set(QT_MIN_VERSION "5.15.2")
@@ -20,8 +20,13 @@ find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Widgets
 )
 
-add_executable(copper main.cpp mainwindow.cpp)
+find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
+    TextEditor
+)
+
+add_executable(copper main.cpp mainwindow.cpp mainsplitter.cpp tab.cpp testcasewidget.cpp)
 
 target_link_libraries(copper
     Qt5::Widgets
+    KF5::TextEditor
 )

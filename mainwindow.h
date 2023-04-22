@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include <QPushButton>
+#include <QTreeView>
+#include <QFileSystemModel>
+#include <QTabWidget>
 
 const QString CODE_DIRECTORY = "/home/tareque/codeforces";
 
@@ -14,10 +17,13 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
 
 private slots:
-    void cl();
+    void openSelectedFile(const QModelIndex &index);
 
 private:
     QPushButton *m_button;
+    QTreeView *treeview;
+    QFileSystemModel *model;
+    QTabWidget* tabWidget;
 };
 
 #endif
