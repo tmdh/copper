@@ -1,7 +1,8 @@
 #include <QLabel>
 #include <QTextEdit>
-#include <QVBoxLayout>
+#include <QBoxLayout>
 #include <QSizePolicy>
+#include <QSpacerItem>
 #include "testcasewidget.h"
 
 TestCaseWidget::TestCaseWidget(QWidget* parent) {
@@ -13,9 +14,11 @@ TestCaseWidget::TestCaseWidget(QWidget* parent) {
     QTextEdit* outputTextEdit = new QTextEdit;
     outputTextEdit->setFixedHeight(100);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    QBoxLayout *layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom ,this);
+    layout->setSpacing(0);
     layout->addWidget(l1);
     layout->addWidget(inputTextEdit);
     layout->addWidget(l2);
     layout->addWidget(outputTextEdit);
+    layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding));
 }

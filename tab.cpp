@@ -13,12 +13,15 @@ Tab::Tab(const QString& filePath, QWidget* parent) {
     m_view = doc->createView(nullptr);
     QUrl url = QUrl::fromLocalFile(filePath);
     m_view->document()->openUrl(url);
-
     addWidget(m_view);
+
     QWidget* w = new QWidget;
     QVBoxLayout* l = new QVBoxLayout(w);
     w->setLayout(l);
-    TestCaseWidget* b = new TestCaseWidget();
-    l->addWidget(b);
+    for (size_t i = 0; i < 6; i++)
+    {
+        TestCaseWidget* b = new TestCaseWidget();
+        l->addWidget(b);
+    }
     addWidget(w);
 }
