@@ -15,13 +15,20 @@ Tab::Tab(const QString& filePath, QWidget* parent) {
     m_view->document()->openUrl(url);
     addWidget(m_view);
 
+    QScrollArea* s = new QScrollArea();
     QWidget* w = new QWidget;
-    QVBoxLayout* l = new QVBoxLayout(w);
+    QVBoxLayout* l = new QVBoxLayout();
     w->setLayout(l);
     for (size_t i = 0; i < 6; i++)
     {
         TestCaseWidget* b = new TestCaseWidget();
         l->addWidget(b);
     }
-    addWidget(w);
+    w->setLayout(l);
+    s->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    s->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    s->setWidgetResizable(true);
+    s->setWidget(w);
+
+    addWidget(s);
 }
