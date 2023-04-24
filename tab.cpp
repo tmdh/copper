@@ -14,21 +14,29 @@ Tab::Tab(const QString& filePath, QWidget* parent) {
     QUrl url = QUrl::fromLocalFile(filePath);
     m_view->document()->openUrl(url);
     addWidget(m_view);
+    
+    QWidget* sideBar = new QWidget;
+    QVBoxLayout* sideBarLayout = new QVBoxLayout();
+    QHBoxLayout* buttonsLayout = new QHBoxLayout();
+    QPushButton* button = new QPushButton("Add test case");
+    buttonsLayout->addWidget(button);
+    sideBarLayout->addLayout(buttonsLayout);
 
-    QScrollArea* s = new QScrollArea();
-    QWidget* w = new QWidget;
-    QVBoxLayout* l = new QVBoxLayout();
-    w->setLayout(l);
+    QScrollArea* testCasesArea = new QScrollArea();
+    QWidget* testCases = new QWidget;
+    QVBoxLayout* testCasesLayout = new QVBoxLayout();
     for (size_t i = 0; i < 6; i++)
     {
-        TestCaseWidget* b = new TestCaseWidget();
-        l->addWidget(b);
+        TestCaseWidget* testCase = new TestCaseWidget();
+        testCasesLayout->addWidget(testCase);
     }
-    w->setLayout(l);
-    s->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    s->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    s->setWidgetResizable(true);
-    s->setWidget(w);
+    testCases->setLayout(testCasesLayout);
+    testCasesArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    testCasesArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    testCasesArea->setWidgetResizable(true);
+    testCasesArea->setWidget(testCases);
+    sideBarLayout->addWidget(testCasesArea);
 
-    addWidget(s);
+    sideBar->setLayout(sideBarLayout);
+    addWidget(sideBar);
 }
