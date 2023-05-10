@@ -5,10 +5,12 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QAction>
+#include <QProcess>
 #include "tab.h"
 #include "testcasewidget.h"
 
 Tab::Tab(const QString& filePath, QWidget* parent) {
+    m_filePath = filePath;
     // Create a KTextEditor document and add it to splitter
     auto editor = KTextEditor::Editor::instance();
     m_doc = editor->createDocument(this);
@@ -29,7 +31,7 @@ Tab::Tab(const QString& filePath, QWidget* parent) {
 
     // Widget for test cases
     QWidget* testCases = new QWidget;
-    QVBoxLayout* testCasesLayout = new QVBoxLayout();
+    testCasesLayout = new QVBoxLayout();
     // Single empty test case
     TestCaseWidget* testCase = new TestCaseWidget();
     testCasesLayout->addWidget(testCase);
@@ -52,5 +54,35 @@ KTextEditor::Document *Tab::document()
 }
 
 void Tab::buildAndRunFile() {
+    int count = testCasesLayout->count();
+    for (int i = 0; i < count; i++) {
+        QWidget* w = testCasesLayout->itemAt(i)->widget();
+        TestCaseWidget* t = qobject_cast<TestCaseWidget*>(w);
+        QProcess* process = new QProcess(this);
+        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            [t](int exitCode, QProcess::ExitStatus exitStatus){
+                if (exitStatus == QProcess::ExitStatus::NormalExit) {
+                    QProcess* process = new QProcess(t);
+                    QString program = "/home/tareque/codeforces/bin/program";
+                    process->start(program, QStringList());
+                    process->write(t->input().toUtf8());
+                    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                        [t, process](int exitCode, QProcess::ExitStatus exitStatus){
+                            if (exitStatus == QProcess::ExitStatus::NormalExit) {
+                                t->setOutput(QString::fromUtf8(process->readAllStandardOutput()));
+                            }
+                        }
+                    );
+                }
+            }
+        );
+        QString program = "/usr/bin/g++";
+        QStringList arguments;
+        arguments << "-o" << "/home/tareque/codeforces/bin/program" << m_filePath;
+        process->start(program, arguments);
+    }
+}
+
+void Tab::buildFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     
 }
