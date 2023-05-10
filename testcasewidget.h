@@ -1,6 +1,5 @@
 #ifndef TASECASEWIDGET_H
 #define TASECASEWIDGET_H
-#endif
 
 #include <QGroupBox>
 
@@ -11,3 +10,5 @@ public:
     TestCaseWidget(QWidget* parent = nullptr);
 
 };
+
+#endif

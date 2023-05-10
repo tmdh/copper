@@ -15,9 +15,12 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+    void closeEvent(QCloseEvent* event) override;
 
 private slots:
     void openSelectedFile(const QModelIndex &index);
+    void openNewFileDialog();
+    void buildAndRunCurrentFile();
 
 private:
     QPushButton *m_button;

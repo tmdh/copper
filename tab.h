@@ -1,6 +1,5 @@
 #ifndef TAB_H
 #define TAB_H
-#endif
 
 #include <QSplitter>
 #include <KTextEditor/Document>
@@ -11,7 +10,14 @@ class Tab : public QSplitter {
     Q_OBJECT
 
     KTextEditor::View* m_view;
-    bool edited = false;
+    KTextEditor::Document* m_doc;
+
 public:
     Tab(const QString& filePath, QWidget* parent = nullptr);
+    KTextEditor::Document* document();
+
+public slots:
+    void buildAndRunFile();
 };
+
+#endif
