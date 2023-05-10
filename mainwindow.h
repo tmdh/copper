@@ -21,6 +21,7 @@ private slots:
     void openSelectedFile(const QModelIndex &index);
     void openNewFileDialog();
     void buildAndRunCurrentFile();
+    void closeTab(int index);
 
 private:
     QPushButton *m_button;

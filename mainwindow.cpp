@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Tab Widget
     tabWidget = new QTabWidget(m_mainSplitter);
     tabWidget->setTabsClosable(true);
+    connect(tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
     
     setCentralWidget(m_mainSplitter);
     m_mainSplitter->setWidths();
@@ -82,4 +83,11 @@ void MainWindow::closeEvent(QCloseEvent* event) {
         Tab* t = qobject_cast<Tab*>(w);
         t->document()->closeUrl();
     }
+}
+
+void MainWindow::closeTab(int index) {
+    QWidget* w = tabWidget->widget(index);
+    Tab* t = qobject_cast<Tab*>(w);
+    t->document()->closeUrl();
+    tabWidget->removeTab(index);
 }
