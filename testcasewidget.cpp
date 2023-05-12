@@ -31,3 +31,9 @@ TestCaseWidget::TestCaseWidget(const QString& input, const QString& expected, QW
 void TestCaseWidget::setOutput(const QString& newOutput) {
     outputTextEdit->setText(newOutput);
 }
+
+void TestCaseWidget::addNewLine() {
+    if (input().isEmpty() || input().back() != '\n') {
+        inputTextEdit->setText(input().append('\n'));
+    }
+}

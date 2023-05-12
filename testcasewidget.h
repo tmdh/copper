@@ -17,6 +17,7 @@ public:
     QString output() { return outputTextEdit->toPlainText(); }
     QString expected() { return expectedTextEdit->toPlainText(); }
     void setOutput(const QString& newOutput);
+    void addNewLine();
 };
 
 #endif

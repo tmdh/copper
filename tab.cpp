@@ -58,31 +58,30 @@ void Tab::buildAndRunFile() {
     for (int i = 0; i < count; i++) {
         QWidget* w = testCasesLayout->itemAt(i)->widget();
         TestCaseWidget* t = qobject_cast<TestCaseWidget*>(w);
-        QProcess* process = new QProcess(this);
-        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            [t](int exitCode, QProcess::ExitStatus exitStatus){
+
+        // Add a newline to input if there isn't any
+        t->addNewLine();
+
+        QProcess* process1 = new QProcess(this);
+        process1->setProgram("/usr/bin/g++");
+        process1->setArguments(QStringList() << "-o" << "/home/tareque/codeforces/bin/program" << m_filePath);
+        QProcess* process2 = new QProcess(this);
+        process2->setProgram("/home/tareque/codeforces/bin/program");
+        connect(process1, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            [t, process2](int exitCode, QProcess::ExitStatus exitStatus){
                 if (exitStatus == QProcess::ExitStatus::NormalExit) {
-                    QProcess* process = new QProcess(t);
-                    QString program = "/home/tareque/codeforces/bin/program";
-                    process->start(program, QStringList());
-                    process->write(t->input().toUtf8());
-                    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                        [t, process](int exitCode, QProcess::ExitStatus exitStatus){
-                            if (exitStatus == QProcess::ExitStatus::NormalExit) {
-                                t->setOutput(QString::fromUtf8(process->readAllStandardOutput()));
-                            }
-                        }
-                    );
+                    process2->start();
+                    process2->write(t->input().toUtf8());
                 }
             }
         );
-        QString program = "/usr/bin/g++";
-        QStringList arguments;
-        arguments << "-o" << "/home/tareque/codeforces/bin/program" << m_filePath;
-        process->start(program, arguments);
+        connect(process2, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            [t, process2](int exitCode, QProcess::ExitStatus exitStatus){
+                if (exitStatus == QProcess::ExitStatus::NormalExit) {
+                    t->setOutput(QString::fromUtf8(process2->readAllStandardOutput()));
+                }
+            }
+        );
+        process1->start();
     }
-}
-
-void Tab::buildFinished(int exitCode, QProcess::ExitStatus exitStatus) {
-    
 }
