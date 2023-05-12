@@ -6,7 +6,9 @@
 #include <QHBoxLayout>
 #include <QAction>
 #include <QProcess>
+#include <QFileInfo>
 #include "tab.h"
+#include "testcase.h"
 #include "testcasewidget.h"
 
 Tab::Tab(const QString& filePath, QWidget* parent) {
@@ -25,9 +27,21 @@ Tab::Tab(const QString& filePath, QWidget* parent) {
     QVBoxLayout* sideBarLayout = new QVBoxLayout();
     // Layout for buttons
     QHBoxLayout* buttonsLayout = new QHBoxLayout();
-    QPushButton* button = new QPushButton("Add test case");
-    buttonsLayout->addWidget(button);
+    QPushButton* addTestCaseButton = new QPushButton("Add test case");
+    buttonsLayout->addWidget(addTestCaseButton);
+    QPushButton* loadTestCasesButton = new QPushButton("Load test cases");
+    buttonsLayout->addWidget(loadTestCasesButton);
+    QPushButton* runTestCasesButton = new QPushButton("Run test cases");
+    buttonsLayout->addWidget(runTestCasesButton);
     sideBarLayout->addLayout(buttonsLayout);
+
+    connect(loadTestCasesButton, &QPushButton::clicked, [this](bool checked) {
+        this->loadTestCases();
+    });
+
+    connect(runTestCasesButton, &QPushButton::clicked, [this](bool checked) {
+        this->runTestCases();
+    });
 
     // Widget for test cases
     QWidget* testCases = new QWidget;
@@ -53,7 +67,7 @@ KTextEditor::Document *Tab::document()
     return m_doc;
 }
 
-void Tab::buildAndRunFile() {
+void Tab::runTestCases() {
     int count = testCasesLayout->count();
     for (int i = 0; i < count; i++) {
         QWidget* w = testCasesLayout->itemAt(i)->widget();
@@ -64,9 +78,9 @@ void Tab::buildAndRunFile() {
 
         QProcess* process1 = new QProcess(this);
         process1->setProgram("/usr/bin/g++");
-        process1->setArguments(QStringList() << "-o" << "/home/tareque/codeforces/bin/program" << m_filePath);
+        process1->setArguments(QStringList() << "-o" << EXECUTABLE_PATH << m_filePath);
         QProcess* process2 = new QProcess(this);
-        process2->setProgram("/home/tareque/codeforces/bin/program");
+        process2->setProgram(EXECUTABLE_PATH);
         connect(process1, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             [t, process2](int exitCode, QProcess::ExitStatus exitStatus){
                 if (exitStatus == QProcess::ExitStatus::NormalExit) {
@@ -84,4 +98,13 @@ void Tab::buildAndRunFile() {
         );
         process1->start();
     }
+}
+
+void Tab::loadTestCases() {
+    QFileInfo fileInfo(m_filePath);
+    TestCaseLoader* loader = new TestCaseLoader(fileInfo.baseName());
+    connect(loader, &TestCaseLoader::loadFinished, [loader]() {
+        
+    });
+    loader->load();
 }

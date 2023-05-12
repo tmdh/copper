@@ -73,7 +73,7 @@ void MainWindow::openNewFileDialog() {
 
 void MainWindow::buildAndRunCurrentFile() {
     Tab* currentTab = qobject_cast<Tab*>(tabWidget->currentWidget());
-    currentTab->buildAndRunFile();
+    currentTab->runTestCases();
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {

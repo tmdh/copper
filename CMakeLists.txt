@@ -24,7 +24,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     TextEditor
 )
 
-add_executable(copper main.cpp mainwindow.cpp mainsplitter.cpp tab.cpp testcasewidget.cpp)
+add_executable(copper main.cpp mainwindow.cpp mainsplitter.cpp tab.cpp testcasewidget.cpp testcase.cpp)
 
 target_link_libraries(copper
     Qt5::Widgets

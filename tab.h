@@ -8,6 +8,8 @@
 #include <KTextEditor/Editor>
 #include <KTextEditor/View>
 
+const QString EXECUTABLE_PATH = "/home/tareque/codeforces/bin/program";
+
 class Tab : public QSplitter {
     Q_OBJECT
 
@@ -19,10 +21,8 @@ class Tab : public QSplitter {
 public:
     Tab(const QString& filePath, QWidget* parent = nullptr);
     KTextEditor::Document* document();
-    void buildAndRunFile();
-
-private slots:
-    void buildFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void loadTestCases();
+    void runTestCases();
 };
 
 #endif
