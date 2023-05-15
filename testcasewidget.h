@@ -16,8 +16,11 @@ public:
     QString input() { return inputTextEdit->toPlainText(); }
     QString output() { return outputTextEdit->toPlainText(); }
     QString expected() { return expectedTextEdit->toPlainText(); }
+    void setInput(const QString& newInput);
     void setOutput(const QString& newOutput);
-    void addNewLine();
+    void setExpected(const QString& newExpected);
+private slots:
+    void compare();
 };
 
 #endif

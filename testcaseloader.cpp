@@ -2,7 +2,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QObject>
-#include <cstring>
+#include <QMessageBox>
 
 TestCaseLoader::TestCaseLoader(QString problemId) {
     if (problemId.back().isLetter()) {
@@ -34,9 +34,10 @@ void TestCaseLoader::load() {
             }
             emit loadFinished();
         } else {
-            // Handle the error here
+            QMessageBox messageBox;
+            messageBox.critical(nullptr, "Error", reply->errorString());
+            messageBox.show();
         }
         reply->deleteLater();
     });
 }
-

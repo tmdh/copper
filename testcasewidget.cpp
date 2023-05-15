@@ -19,6 +19,9 @@ TestCaseWidget::TestCaseWidget(const QString& input, const QString& expected, QW
     expectedTextEdit->setText(expected);
     expectedTextEdit->setFixedHeight(100);
 
+    connect(outputTextEdit, &QTextEdit::textChanged, this, &TestCaseWidget::compare);
+    connect(expectedTextEdit, &QTextEdit::textChanged, this, &TestCaseWidget::compare);
+
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom ,this);
     layout->setSpacing(0);
     layout->addWidget(l1);
@@ -30,12 +33,26 @@ TestCaseWidget::TestCaseWidget(const QString& input, const QString& expected, QW
     layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding));
 }
 
-void TestCaseWidget::setOutput(const QString& newOutput) {
+void TestCaseWidget::setInput(const QString &newInput)
+{
+    inputTextEdit->setText(newInput);
+}
+
+void TestCaseWidget::setOutput(const QString &newOutput)
+{
     outputTextEdit->setText(newOutput);
 }
 
-void TestCaseWidget::addNewLine() {
-    if (input().isEmpty() || input().back() != '\n') {
-        inputTextEdit->setText(input().append('\n'));
+void TestCaseWidget::setExpected(const QString &newExpected)
+{
+    expectedTextEdit->setText(newExpected);
+}
+
+void TestCaseWidget::compare()
+{
+    if (outputTextEdit->toPlainText() != expectedTextEdit->toPlainText()) {
+        outputTextEdit->setStyleSheet("QTextEdit { border: 1px solid red; }");
+    } else {
+        outputTextEdit->setStyleSheet("");
     }
 }

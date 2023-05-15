@@ -73,9 +73,6 @@ void Tab::runTestCases() {
         QWidget* w = testCasesLayout->itemAt(i)->widget();
         TestCaseWidget* t = qobject_cast<TestCaseWidget*>(w);
 
-        // Add a newline to input if there isn't any
-        t->addNewLine();
-
         QProcess* process1 = new QProcess(this);
         process1->setProgram("/usr/bin/g++");
         process1->setArguments(QStringList() << "-o" << EXECUTABLE_PATH << m_filePath);
@@ -86,6 +83,7 @@ void Tab::runTestCases() {
                 if (exitStatus == QProcess::ExitStatus::NormalExit) {
                     process2->start();
                     process2->write(t->input().toUtf8());
+                    process2->closeWriteChannel();
                 }
             }
         );
@@ -104,8 +102,21 @@ void Tab::loadTestCases() {
     QFileInfo fileInfo(m_filePath);
     TestCaseLoader* loader = new TestCaseLoader(fileInfo.baseName());
     connect(loader, &TestCaseLoader::loadFinished, [loader, this]() {
-        for (int i = 0; i < loader->testCaseObjects.size(); ++i) {
-            TestCaseWidget* t = new TestCaseWidget(loader->testCaseObjects[i].input, loader->testCaseObjects[i].expected);
+        int count = testCasesLayout->count();
+        int i = 0;
+        if (count == 1) {
+            QWidget *w = testCasesLayout->itemAt(0)->widget();
+            TestCaseWidget *t = qobject_cast<TestCaseWidget *>(w);
+            if (t->input() == "" && t->output() == "" && t->expected() == "") {
+                if (loader->testCaseObjects.size() > 0) {
+                    t->setInput(loader->testCaseObjects[0].input);
+                    t->setExpected(loader->testCaseObjects[0].expected);
+                }
+            }
+            i++;
+        }
+        for (; i < loader->testCaseObjects.size(); ++i) {
+            TestCaseWidget *t = new TestCaseWidget(loader->testCaseObjects[i].input, loader->testCaseObjects[i].expected);
             testCasesLayout->addWidget(t);
         }
     });
