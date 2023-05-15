@@ -1,7 +1,8 @@
+#include "testcaseloader.h"
 #include <QNetworkAccessManager>
-#include <QObject>
 #include <QNetworkReply>
-#include "testcase.h"
+#include <QObject>
+#include <cstring>
 
 TestCaseLoader::TestCaseLoader(QString problemId) {
     if (problemId.back().isLetter()) {
@@ -11,7 +12,7 @@ TestCaseLoader::TestCaseLoader(QString problemId) {
         contestId = problemId.left(problemId.length() - 2);
         index = problemId.right(2).toUpper();
     }
-    testCases = QList<TestCase>();
+    testCaseObjects = QList<TestCaseObject>();
 }
 
 void TestCaseLoader::load() {
@@ -22,7 +23,15 @@ void TestCaseLoader::load() {
     connect(reply, &QNetworkReply::finished, [=]() {
         if (reply->error() == QNetworkReply::NoError) {
             QByteArray data = reply->readAll();
-            // TODO
+            uintptr_t length = 0;
+            qDebug() << data.data();
+            const TestCase* testCases = parse_testcase_ffi(data.data(), &length);
+            for (int i = 0; i < length; ++i) {
+                TestCaseObject t;
+                t.input = testCases[i].input;
+                t.expected = testCases[i].expected;
+                testCaseObjects << t;
+            }
             emit loadFinished();
         } else {
             // Handle the error here

@@ -2,3 +2,5 @@ build
 .cache
 .clang-format
 .vscode
+rust/target
+.idea

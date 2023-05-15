@@ -8,7 +8,7 @@
 #include <QProcess>
 #include <QFileInfo>
 #include "tab.h"
-#include "testcase.h"
+#include "testcaseloader.h"
 #include "testcasewidget.h"
 
 Tab::Tab(const QString& filePath, QWidget* parent) {
@@ -103,8 +103,11 @@ void Tab::runTestCases() {
 void Tab::loadTestCases() {
     QFileInfo fileInfo(m_filePath);
     TestCaseLoader* loader = new TestCaseLoader(fileInfo.baseName());
-    connect(loader, &TestCaseLoader::loadFinished, [loader]() {
-        
+    connect(loader, &TestCaseLoader::loadFinished, [loader, this]() {
+        for (int i = 0; i < loader->testCaseObjects.size(); ++i) {
+            TestCaseWidget* t = new TestCaseWidget(loader->testCaseObjects[i].input, loader->testCaseObjects[i].expected);
+            testCasesLayout->addWidget(t);
+        }
     });
     loader->load();
 }

@@ -8,6 +8,7 @@
 TestCaseWidget::TestCaseWidget(const QString& input, const QString& expected, QWidget* parent) {
     QLabel* l1 = new QLabel("Input:");
     inputTextEdit = new QTextEdit;
+    inputTextEdit->setText(input);
     inputTextEdit->setFixedHeight(100);
     inputTextEdit->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding);
     QLabel* l2 = new QLabel("Output:");
@@ -15,6 +16,7 @@ TestCaseWidget::TestCaseWidget(const QString& input, const QString& expected, QW
     outputTextEdit->setFixedHeight(100);
     QLabel* l3 = new QLabel("Expected:");
     expectedTextEdit = new QTextEdit;
+    expectedTextEdit->setText(expected);
     expectedTextEdit->setFixedHeight(100);
 
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom ,this);
