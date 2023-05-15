@@ -1,16 +1,16 @@
 #include <QDir>
+#include <QFile>
 #include <QFileSystemModel>
+#include <QInputDialog>
 #include <QPushButton>
+#include <QShortcut>
+#include <QSplitter>
+#include <QTabWidget>
 #include <QTextEdit>
 #include <QTreeView>
-#include <QTabWidget>
-#include <QSplitter>
-#include <QShortcut>
-#include <QInputDialog>
-#include <QFile>
 
-#include "mainwindow.h"
 #include "mainsplitter.h"
+#include "mainwindow.h"
 #include "tab.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     tabWidget = new QTabWidget(m_mainSplitter);
     tabWidget->setTabsClosable(true);
     connect(tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
-    
+
     setCentralWidget(m_mainSplitter);
     m_mainSplitter->setWidths();
     connect(treeview, &QTreeView::clicked, this, &MainWindow::openSelectedFile);
@@ -48,46 +48,49 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowState(Qt::WindowMaximized);
 }
 
-void MainWindow::openSelectedFile(const QModelIndex &index) {
+void MainWindow::openSelectedFile(const QModelIndex &index)
+{
     QString selectedFile = model->filePath(index);
-    Tab* tab = new Tab(selectedFile);
+    Tab *tab = new Tab(selectedFile);
     tabWidget->addTab(tab, model->fileName(index));
     tabWidget->setCurrentWidget(tab);
 }
 
-void MainWindow::openNewFileDialog() {
+void MainWindow::openNewFileDialog()
+{
     bool ok;
-    QString fileName = QInputDialog::getText(this, tr("Enter file name to create or open"),
-        tr("File name:"), QLineEdit::Normal,
-        QDir::home().dirName(), &ok);
+    QString fileName = QInputDialog::getText(this, tr("Enter file name to create or open"), tr("File name:"), QLineEdit::Normal, QDir::home().dirName(), &ok);
     if (ok && !fileName.isEmpty()) {
         QString filePath = CODE_DIRECTORY + "/" + fileName;
         QFile file(filePath);
         file.open(QIODevice::WriteOnly);
         file.close();
-        Tab* tab = new Tab(filePath);
+        Tab *tab = new Tab(filePath);
         tabWidget->addTab(tab, fileName);
         tabWidget->setCurrentWidget(tab);
     }
 }
 
-void MainWindow::buildAndRunCurrentFile() {
-    Tab* currentTab = qobject_cast<Tab*>(tabWidget->currentWidget());
+void MainWindow::buildAndRunCurrentFile()
+{
+    Tab *currentTab = qobject_cast<Tab *>(tabWidget->currentWidget());
     currentTab->runTestCases();
 }
 
-void MainWindow::closeEvent(QCloseEvent* event) {
+void MainWindow::closeEvent(QCloseEvent *event)
+{
     int count = tabWidget->count();
     for (int i = 0; i < count; i++) {
-        QWidget* w = tabWidget->widget(i);
-        Tab* t = qobject_cast<Tab*>(w);
+        QWidget *w = tabWidget->widget(i);
+        Tab *t = qobject_cast<Tab *>(w);
         t->document()->closeUrl();
     }
 }
 
-void MainWindow::closeTab(int index) {
-    QWidget* w = tabWidget->widget(index);
-    Tab* t = qobject_cast<Tab*>(w);
+void MainWindow::closeTab(int index)
+{
+    QWidget *w = tabWidget->widget(index);
+    Tab *t = qobject_cast<Tab *>(w);
     t->document()->closeUrl();
     tabWidget->removeTab(index);
 }

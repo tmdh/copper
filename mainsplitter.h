@@ -2,10 +2,11 @@
 #define MAINSPLITTER_H
 #endif
 
-#include <QSplitter>
 #include <QSettings>
+#include <QSplitter>
 
-class MainSplitter : public QSplitter {
+class MainSplitter : public QSplitter
+{
     Q_OBJECT
 
 public:

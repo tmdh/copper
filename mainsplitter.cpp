@@ -3,9 +3,12 @@
 
 #include "mainsplitter.h"
 
-MainSplitter::MainSplitter(QWidget* parent) {}
+MainSplitter::MainSplitter(QWidget *parent)
+{
+}
 
-void MainSplitter::setWidths() {
+void MainSplitter::setWidths()
+{
     int largeWidth = QGuiApplication::primaryScreen()->virtualSize().width();
     setSizes(QList<int>({400, largeWidth}));
 }

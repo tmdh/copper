@@ -1,17 +1,18 @@
-#include <QGroupBox>
-#include <QVBoxLayout>
-#include <QScrollArea>
-#include <QTextEdit>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QAction>
-#include <QProcess>
-#include <QFileInfo>
 #include "tab.h"
 #include "testcaseloader.h"
 #include "testcasewidget.h"
+#include <QAction>
+#include <QFileInfo>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QProcess>
+#include <QPushButton>
+#include <QScrollArea>
+#include <QTextEdit>
+#include <QVBoxLayout>
 
-Tab::Tab(const QString& filePath, QWidget* parent) {
+Tab::Tab(const QString &filePath, QWidget *parent)
+{
     m_filePath = filePath;
     // Create a KTextEditor document and add it to splitter
     auto editor = KTextEditor::Editor::instance();
@@ -20,18 +21,18 @@ Tab::Tab(const QString& filePath, QWidget* parent) {
     QUrl url = QUrl::fromLocalFile(filePath);
     m_view->document()->openUrl(url);
     addWidget(m_view);
-    
+
     // Sidebar widget
-    QWidget* sideBar = new QWidget;
+    QWidget *sideBar = new QWidget;
     // Main vertical layout for sidebar
-    QVBoxLayout* sideBarLayout = new QVBoxLayout();
+    QVBoxLayout *sideBarLayout = new QVBoxLayout();
     // Layout for buttons
-    QHBoxLayout* buttonsLayout = new QHBoxLayout();
-    QPushButton* addTestCaseButton = new QPushButton("Add test case");
+    QHBoxLayout *buttonsLayout = new QHBoxLayout();
+    QPushButton *addTestCaseButton = new QPushButton("Add test case");
     buttonsLayout->addWidget(addTestCaseButton);
-    QPushButton* loadTestCasesButton = new QPushButton("Load test cases");
+    QPushButton *loadTestCasesButton = new QPushButton("Load test cases");
     buttonsLayout->addWidget(loadTestCasesButton);
-    QPushButton* runTestCasesButton = new QPushButton("Run test cases");
+    QPushButton *runTestCasesButton = new QPushButton("Run test cases");
     buttonsLayout->addWidget(runTestCasesButton);
     sideBarLayout->addLayout(buttonsLayout);
 
@@ -44,14 +45,14 @@ Tab::Tab(const QString& filePath, QWidget* parent) {
     });
 
     // Widget for test cases
-    QWidget* testCases = new QWidget;
+    QWidget *testCases = new QWidget;
     testCasesLayout = new QVBoxLayout();
     // Single empty test case
-    TestCaseWidget* testCase = new TestCaseWidget();
+    TestCaseWidget *testCase = new TestCaseWidget();
     testCasesLayout->addWidget(testCase);
     testCases->setLayout(testCasesLayout);
 
-    QScrollArea* testCasesArea = new QScrollArea();
+    QScrollArea *testCasesArea = new QScrollArea();
     testCasesArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     testCasesArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     testCasesArea->setWidgetResizable(true);
@@ -67,40 +68,38 @@ KTextEditor::Document *Tab::document()
     return m_doc;
 }
 
-void Tab::runTestCases() {
+void Tab::runTestCases()
+{
     int count = testCasesLayout->count();
     for (int i = 0; i < count; i++) {
-        QWidget* w = testCasesLayout->itemAt(i)->widget();
-        TestCaseWidget* t = qobject_cast<TestCaseWidget*>(w);
+        QWidget *w = testCasesLayout->itemAt(i)->widget();
+        TestCaseWidget *t = qobject_cast<TestCaseWidget *>(w);
 
-        QProcess* process1 = new QProcess(this);
+        QProcess *process1 = new QProcess(this);
         process1->setProgram("/usr/bin/g++");
         process1->setArguments(QStringList() << "-o" << EXECUTABLE_PATH << m_filePath);
-        QProcess* process2 = new QProcess(this);
+        QProcess *process2 = new QProcess(this);
         process2->setProgram(EXECUTABLE_PATH);
-        connect(process1, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            [t, process2](int exitCode, QProcess::ExitStatus exitStatus){
-                if (exitStatus == QProcess::ExitStatus::NormalExit) {
-                    process2->start();
-                    process2->write(t->input().toUtf8());
-                    process2->closeWriteChannel();
-                }
+        connect(process1, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [t, process2](int exitCode, QProcess::ExitStatus exitStatus) {
+            if (exitStatus == QProcess::ExitStatus::NormalExit) {
+                process2->start();
+                process2->write(t->input().toUtf8());
+                process2->closeWriteChannel();
             }
-        );
-        connect(process2, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            [t, process2](int exitCode, QProcess::ExitStatus exitStatus){
-                if (exitStatus == QProcess::ExitStatus::NormalExit) {
-                    t->setOutput(QString::fromUtf8(process2->readAllStandardOutput()));
-                }
+        });
+        connect(process2, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [t, process2](int exitCode, QProcess::ExitStatus exitStatus) {
+            if (exitStatus == QProcess::ExitStatus::NormalExit) {
+                t->setOutput(QString::fromUtf8(process2->readAllStandardOutput()));
             }
-        );
+        });
         process1->start();
     }
 }
 
-void Tab::loadTestCases() {
+void Tab::loadTestCases()
+{
     QFileInfo fileInfo(m_filePath);
-    TestCaseLoader* loader = new TestCaseLoader(fileInfo.baseName());
+    TestCaseLoader *loader = new TestCaseLoader(fileInfo.baseName());
     connect(loader, &TestCaseLoader::loadFinished, [loader, this]() {
         int count = testCasesLayout->count();
         int i = 0;

@@ -1,10 +1,11 @@
 #include "testcaseloader.h"
+#include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QObject>
-#include <QMessageBox>
 
-TestCaseLoader::TestCaseLoader(QString problemId) {
+TestCaseLoader::TestCaseLoader(QString problemId)
+{
     if (problemId.back().isLetter()) {
         contestId = problemId.left(problemId.length() - 1);
         index = problemId.back();
@@ -15,7 +16,8 @@ TestCaseLoader::TestCaseLoader(QString problemId) {
     testCaseObjects = QList<TestCaseObject>();
 }
 
-void TestCaseLoader::load() {
+void TestCaseLoader::load()
+{
     QNetworkAccessManager *manager = new QNetworkAccessManager();
     QUrl url("https://codeforces.com/problemset/problem/" + contestId + "/" + index);
     QNetworkRequest request(url);
@@ -25,7 +27,7 @@ void TestCaseLoader::load() {
             QByteArray data = reply->readAll();
             uintptr_t length = 0;
             qDebug() << data.data();
-            const TestCase* testCases = parse_testcase_ffi(data.data(), &length);
+            const TestCase *testCases = parse_testcase_ffi(data.data(), &length);
             for (int i = 0; i < length; ++i) {
                 TestCaseObject t;
                 t.input = testCases[i].input;

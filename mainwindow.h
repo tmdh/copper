@@ -1,11 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QFileSystemModel>
 #include <QMainWindow>
 #include <QPushButton>
-#include <QTreeView>
-#include <QFileSystemModel>
 #include <QTabWidget>
+#include <QTreeView>
 
 const QString CODE_DIRECTORY = "/home/tareque/codeforces";
 
@@ -15,7 +15,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    void closeEvent(QCloseEvent* event) override;
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void openSelectedFile(const QModelIndex &index);
@@ -27,7 +27,7 @@ private:
     QPushButton *m_button;
     QTreeView *treeview;
     QFileSystemModel *model;
-    QTabWidget* tabWidget;
+    QTabWidget *tabWidget;
 };
 
 #endif

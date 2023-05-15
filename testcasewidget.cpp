@@ -1,20 +1,21 @@
-#include <QLabel>
-#include <QTextEdit>
+#include "testcasewidget.h"
 #include <QBoxLayout>
+#include <QLabel>
 #include <QSizePolicy>
 #include <QSpacerItem>
-#include "testcasewidget.h"
+#include <QTextEdit>
 
-TestCaseWidget::TestCaseWidget(const QString& input, const QString& expected, QWidget* parent) {
-    QLabel* l1 = new QLabel("Input:");
+TestCaseWidget::TestCaseWidget(const QString &input, const QString &expected, QWidget *parent)
+{
+    QLabel *l1 = new QLabel("Input:");
     inputTextEdit = new QTextEdit;
     inputTextEdit->setText(input);
     inputTextEdit->setFixedHeight(100);
     inputTextEdit->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding);
-    QLabel* l2 = new QLabel("Output:");
+    QLabel *l2 = new QLabel("Output:");
     outputTextEdit = new QTextEdit;
     outputTextEdit->setFixedHeight(100);
-    QLabel* l3 = new QLabel("Expected:");
+    QLabel *l3 = new QLabel("Expected:");
     expectedTextEdit = new QTextEdit;
     expectedTextEdit->setText(expected);
     expectedTextEdit->setFixedHeight(100);
@@ -22,7 +23,7 @@ TestCaseWidget::TestCaseWidget(const QString& input, const QString& expected, QW
     connect(outputTextEdit, &QTextEdit::textChanged, this, &TestCaseWidget::compare);
     connect(expectedTextEdit, &QTextEdit::textChanged, this, &TestCaseWidget::compare);
 
-    QBoxLayout *layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom ,this);
+    QBoxLayout *layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom, this);
     layout->setSpacing(0);
     layout->addWidget(l1);
     layout->addWidget(inputTextEdit);
