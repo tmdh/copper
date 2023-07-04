@@ -26,7 +26,6 @@ void TestCaseLoader::load()
         if (reply->error() == QNetworkReply::NoError) {
             QByteArray data = reply->readAll();
             uintptr_t length = 0;
-            qDebug() << data.data();
             const TestCase *testCases = parse_testcase_ffi(data.data(), &length);
             for (int i = 0; i < length; ++i) {
                 TestCaseObject t;
