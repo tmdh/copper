@@ -2,18 +2,11 @@ name: Windows Qt5.15 Build
 
 on:
   push:
-    branches:
-      - '**'
-    tags:
-      - '**'
-  pull_request:
-    branches:
-      - '**'
+    branches: ["master"]
 
 jobs:
   build:
     runs-on: windows-latest
-    environment: Windows Qt5.15
 
     steps:
       - name: Checkout code
