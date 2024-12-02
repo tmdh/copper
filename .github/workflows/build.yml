@@ -16,18 +16,15 @@ jobs:
     environment: Windows Qt5.15
 
     steps:
-      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Clone the necessary repositories
       - name: Clone ci-utilities
         run: git clone https://invent.kde.org/sysadmin/ci-utilities.git --depth=1
 
       - name: Clone repo-metadata
         run: git clone https://invent.kde.org/sysadmin/repo-metadata.git ci-utilities/repo-metadata/ --depth=1
 
-      # Set environment variables
       env:
         KDECI_CACHE_PATH: C:/Gitlab/Artifacts/windows-qt5.15/
         KDECI_GITLAB_SERVER: https://invent.kde.org/
@@ -37,7 +34,6 @@ jobs:
         CC: cl.exe
         PYTHONUTF8: 1
 
-      # Setup MSVC environment and run the build script
       - name: Setup MSVC Environment
         shell: pwsh
         run: . ci-utilities/resources/setup-msvc-env.ps1
@@ -45,7 +41,6 @@ jobs:
       - name: Run CI Build Script
         run: python -u ci-utilities/run-ci-build.py --project ${{ github.event.repository.name }} --branch ${{ github.ref_name }} --platform Windows/Qt5/Shared
 
-      # Upload artifacts
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
