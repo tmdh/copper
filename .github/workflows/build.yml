@@ -1,38 +1,51 @@
-name: Windows Qt5.15 Build
-
-on:
+name: Windows Qt5.15 Build with Docker
+'on':
   push:
-    branches: ["master"]
-
+    branches:
+      - '**'
+    tags:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Clone ci-utilities
-        run: git clone https://invent.kde.org/sysadmin/ci-utilities.git --depth=1
+      - name: Install Docker
+        run: |
+          choco install docker-desktop --pre
+          Start-Service docker
 
-      - name: Clone repo-metadata
-        run: git clone https://invent.kde.org/sysadmin/repo-metadata.git ci-utilities/repo-metadata/ --depth=1
+      - name: Pull Docker Image
+        run: >-
+          docker pull
+          invent-registry.kde.org/sysadmin/ci-images/windows-msvc2019-qt515:latest
 
-      env:
-        KDECI_CACHE_PATH: C:/Gitlab/Artifacts/windows-qt5.15/
-        KDECI_GITLAB_SERVER: https://invent.kde.org/
-        KDECI_PACKAGE_PROJECT: teams/ci-artifacts/windows-qt5.15
-        CRAFT_ROOT: C:/Craft/windows-msvc2019_64-cl/
-        CXX: cl.exe
-        CC: cl.exe
-        PYTHONUTF8: 1
+      - name: Run Build in Docker
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace \
 
-      - name: Setup MSVC Environment
-        shell: pwsh
-        run: . ci-utilities/resources/setup-msvc-env.ps1
+          invent-registry.kde.org/sysadmin/ci-images/windows-msvc2019-qt515:latest
+          \
 
-      - name: Run CI Build Script
-        run: python -u ci-utilities/run-ci-build.py --project ${{ github.event.repository.name }} --branch ${{ github.ref_name }} --platform Windows/Qt5/Shared
+          powershell -Command "
+
+          git clone https://invent.kde.org/sysadmin/ci-utilities.git --depth=1;
+
+          git clone https://invent.kde.org/sysadmin/repo-metadata.git
+          ci-utilities/repo-metadata/ --depth=1;
+
+          . ci-utilities/resources/setup-msvc-env.ps1;
+
+          python -u ci-utilities/run-ci-build.py --project ${{
+          github.event.repository.name }} --branch ${{ github.ref_name }}
+          --platform Windows/Qt5/Shared;
+
+          "
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
@@ -40,4 +53,3 @@ jobs:
           name: JUnitTestResults
           path: JUnitTestResults.xml
           retention-days: 14
-
